@@ -32,9 +32,14 @@ if __name__ == "__main__":
     ]
 
     # use "pip install -e .[dev]" to install required components + extra components
-    extras_require = [
+    production = [
         'vivarium_cluster_tools==1.2.3',
         'vivarium_inputs[data]==4.0.2',
+    ]
+
+    interactive = [
+        'sympy',
+        'matplotlib',
     ]
 
     setup(
@@ -55,7 +60,8 @@ if __name__ == "__main__":
 
         install_requires=install_requirements,
         extras_require={
-            'dev': extras_require,
+            'interactive': interactive,
+            'dev': production + interactive,
         },
 
         zip_safe=False,
