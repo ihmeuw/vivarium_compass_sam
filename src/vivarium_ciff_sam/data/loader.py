@@ -20,7 +20,6 @@ from vivarium_gbd_access import gbd
 from vivarium_inputs import globals as vi_globals, interface, utilities as vi_utils, utility_data
 from vivarium_inputs.mapping_extension import alternative_risk_factors
 
-from vivarium_ciff_sam import paths
 from vivarium_ciff_sam.constants import data_keys
 
 
@@ -49,13 +48,6 @@ def get_data(lookup_key: str, location: str) -> pd.DataFrame:
         data_keys.POPULATION.ACMR: load_standard_data,
 
         # TODO - add appropriate mappings
-        # data_keys.DIARRHEA_PREVALENCE: load_standard_data,
-        # data_keys.DIARRHEA_INCIDENCE_RATE: load_standard_data,
-        # data_keys.DIARRHEA_REMISSION_RATE: load_standard_data,
-        # data_keys.DIARRHEA_CAUSE_SPECIFIC_MORTALITY_RATE: load_standard_data,
-        # data_keys.DIARRHEA_EXCESS_MORTALITY_RATE: load_standard_data,
-        # data_keys.DIARRHEA_DISABILITY_WEIGHT: load_standard_data,
-        # data_keys.DIARRHEA_RESTRICTIONS: load_metadata,
     }
     return mapping[lookup_key](lookup_key, location)
 
@@ -86,7 +78,8 @@ def load_theoretical_minimum_risk_life_expectancy(key: str, location: str) -> pd
 def load_standard_data(key: str, location: str) -> pd.DataFrame:
     key = EntityKey(key)
     entity = get_entity(key)
-    return interface.get_measure(entity, key.measure, location)
+    data = interface.get_measure(entity, key.measure, location).droplevel('location')
+    return data
 
 
 def load_metadata(key: str, location: str):
@@ -102,13 +95,13 @@ def _load_em_from_meid(location, meid, measure):
     location_id = utility_data.get_location_id(location)
     data = gbd.get_modelable_entity_draws(meid, location_id)
     data = data[data.measure_id == vi_globals.MEASURES[measure]]
-    data = utilities.normalize(data, fill_value=0)
+    data = vi_utils.normalize(data, fill_value=0)
     data = data.filter(vi_globals.DEMOGRAPHIC_COLUMNS + vi_globals.DRAW_COLUMNS)
-    data = utilities.reshape(data)
-    data = utilities.scrub_gbd_conventions(data, location)
-    data = utilities.split_interval(data, interval_column='age', split_column_prefix='age')
-    data = utilities.split_interval(data, interval_column='year', split_column_prefix='year')
-    return utilities.sort_hierarchical_data(data)
+    data = vi_utils.reshape(data)
+    data = vi_utils.scrub_gbd_conventions(data, location)
+    data = vi_utils.split_interval(data, interval_column='age', split_column_prefix='age')
+    data = vi_utils.split_interval(data, interval_column='year', split_column_prefix='year')
+    return vi_utils.sort_hierarchical_data(data)
 
 
 # TODO - add project-specific data functions here
