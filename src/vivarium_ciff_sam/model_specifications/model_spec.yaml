@@ -1,0 +1,47 @@
+components:
+    vivarium_public_health:
+        population:
+            - BasePopulation()
+            - Mortality()
+
+#    vivarium_csu_swissre_lung_cancer.components:
+#        - MortalityObserver()
+#        - DisabilityObserver()
+
+configuration:
+    input_data:
+        input_draw_number: 0
+    interpolation:
+        order: 0
+        extrapolate: True
+    randomness:
+        map_size: 1_000_000
+        key_columns: ['entrance_time', 'age']
+        random_seed: 0
+    time:
+        start:
+            year: 2022
+            month: 1
+            day: 1
+        end:
+            year: 2022
+            month: 1
+            day: 31
+        step_size: 1 # Days
+    population:
+        population_size: 100000
+        age_start: 0
+        age_end: 5
+
+    screening_algorithm:
+        scenario: 'baseline'
+
+#    metrics:
+#        disability:
+#            by_age: True
+#            by_sex: True
+#            by_year: True
+#        mortality:
+#            by_age: True
+#            by_sex: True
+#            by_year: True

@@ -78,7 +78,8 @@ def load_theoretical_minimum_risk_life_expectancy(key: str, location: str) -> pd
 def load_standard_data(key: str, location: str) -> pd.DataFrame:
     key = EntityKey(key)
     entity = get_entity(key)
-    return interface.get_measure(entity, key.measure, location)
+    data = interface.get_measure(entity, key.measure, location).droplevel('location')
+    return data
 
 
 def load_metadata(key: str, location: str):
