@@ -30,37 +30,85 @@ class __Population(NamedTuple):
 POPULATION = __Population()
 
 
-# TODO - sample key group used to identify keys in model
 # For more information see the tutorial:
 # https://vivarium-inputs.readthedocs.io/en/latest/tutorials/pulling_data.html#entity-measure-data
-class __SomeDisease(NamedTuple):
+class __DiarrhealDiseases(NamedTuple):
 
     # Keys that will be loaded into the artifact. must have a colon type declaration
-    SOME_DISEASE_PREVALENCE: TargetString = TargetString('cause.some_disease.prevalence')
-    SOME_DISEASE_INCIDENCE_RATE: TargetString = TargetString('cause.some_disease.incidence_rate')
-    SOME_DISEASE_REMISSION_RATE: TargetString = TargetString('cause.some_disease.remission_rate')
-    DISABILITY_WEIGHT: TargetString = TargetString('cause.some_disease.disability_weight')
-    EMR: TargetString = TargetString('cause.some_disease.excess_mortality_rate')
-    CSMR: TargetString = TargetString('cause.some_disease.cause_specific_mortality_rate')
-    RESTRICTIONS: TargetString = TargetString('cause.some_disease.restrictions')
+    PREVALENCE: TargetString = TargetString('cause.diarrheal_diseases.prevalence')
+    INCIDENCE_RATE: TargetString = TargetString('cause.diarrheal_diseases.incidence_rate')
+    REMISSION_RATE: TargetString = TargetString('cause.diarrheal_diseases.remission_rate')
+    DISABILITY_WEIGHT: TargetString = TargetString('cause.diarrheal_diseases.disability_weight')
+    EMR: TargetString = TargetString('cause.diarrheal_diseases.excess_mortality_rate')
+    CSMR: TargetString = TargetString('cause.diarrheal_diseases.cause_specific_mortality_rate')
+    RESTRICTIONS: TargetString = TargetString('cause.diarrheal_diseases.restrictions')
 
     # Useful keys not for the artifact - distinguished by not using the colon type declaration
-    RAW_DISEASE_PREVALENCE = TargetString('sequela.raw_disease.prevalence')
-    RAW_DISEASE_INCIDENCE_RATE = TargetString('sequela.raw_disease.incidence_rate')
 
     @property
     def name(self):
-        return 'some_disease'
+        return 'diarrheal_diseases'
 
     @property
     def log_name(self):
-        return 'some disease'
+        return 'diarrheal diseases'
 
 
-SOME_DISEASE = __SomeDisease()
+DIARRHEA = __DiarrhealDiseases()
+
+
+class __Measles(NamedTuple):
+
+    # Keys that will be loaded into the artifact. must have a colon type declaration
+    PREVALENCE: TargetString = TargetString('cause.measles.prevalence')
+    INCIDENCE_RATE: TargetString = TargetString('cause.measles.incidence_rate')
+    REMISSION_RATE: TargetString = TargetString('cause.measles.remission_rate')
+    DISABILITY_WEIGHT: TargetString = TargetString('cause.measles.disability_weight')
+    EMR: TargetString = TargetString('cause.measles.excess_mortality_rate')
+    CSMR: TargetString = TargetString('cause.measles.cause_specific_mortality_rate')
+    RESTRICTIONS: TargetString = TargetString('cause.measles.restrictions')
+
+    # Useful keys not for the artifact - distinguished by not using the colon type declaration
+
+    @property
+    def name(self):
+        return 'measles'
+
+    @property
+    def log_name(self):
+        return 'measles'
+
+
+MEASLES = __Measles()
+
+
+class __LowerRespiratoryInfections(NamedTuple):
+
+    # Keys that will be loaded into the artifact. must have a colon type declaration
+    PREVALENCE: TargetString = TargetString('cause.lower_respiratory_infections.prevalence')
+    INCIDENCE_RATE: TargetString = TargetString('cause.lower_respiratory_infections.incidence_rate')
+    REMISSION_RATE: TargetString = TargetString('cause.lower_respiratory_infections.remission_rate')
+    DISABILITY_WEIGHT: TargetString = TargetString('cause.lower_respiratory_infections.disability_weight')
+    EMR: TargetString = TargetString('cause.lower_respiratory_infections.excess_mortality_rate')
+    CSMR: TargetString = TargetString('cause.lower_respiratory_infections.cause_specific_mortality_rate')
+    RESTRICTIONS: TargetString = TargetString('cause.lower_respiratory_infections.restrictions')
+
+    # Useful keys not for the artifact - distinguished by not using the colon type declaration
+
+    @property
+    def name(self):
+        return 'lower_respiratory_infections'
+
+    @property
+    def log_name(self):
+        return 'lower respiratory infections'
+
+
+LRI = __LowerRespiratoryInfections()
 
 MAKE_ARTIFACT_KEY_GROUPS = [
     POPULATION,
-    # TODO: list all key groups here
-    # SOME_DISEASE
+    DIARRHEA,
+    MEASLES,
+    LRI,
 ]
