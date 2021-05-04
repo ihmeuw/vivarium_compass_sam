@@ -57,7 +57,6 @@ def get_data(lookup_key: str, location: str) -> pd.DataFrame:
 
         data_keys.MEASLES.PREVALENCE: load_standard_data,
         data_keys.MEASLES.INCIDENCE_RATE: load_standard_data,
-        data_keys.MEASLES.REMISSION_RATE: load_standard_data,
         data_keys.MEASLES.DISABILITY_WEIGHT: load_standard_data,
         data_keys.MEASLES.EMR: load_standard_data,
         data_keys.MEASLES.CSMR: load_standard_data,

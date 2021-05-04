@@ -62,7 +62,6 @@ class __Measles(NamedTuple):
     # Keys that will be loaded into the artifact. must have a colon type declaration
     PREVALENCE: TargetString = TargetString('cause.measles.prevalence')
     INCIDENCE_RATE: TargetString = TargetString('cause.measles.incidence_rate')
-    REMISSION_RATE: TargetString = TargetString('cause.measles.remission_rate')
     DISABILITY_WEIGHT: TargetString = TargetString('cause.measles.disability_weight')
     EMR: TargetString = TargetString('cause.measles.excess_mortality_rate')
     CSMR: TargetString = TargetString('cause.measles.cause_specific_mortality_rate')
