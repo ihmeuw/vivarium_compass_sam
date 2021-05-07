@@ -19,7 +19,6 @@ if __name__ == "__main__":
     install_requirements = [
         'vivarium==0.10.4',
         'vivarium_public_health==0.10.9',
-        'vivarium_cluster_tools==1.2.3',
         'click',
         'gbd_mapping>=3.0.0, <4.0.0',
         'jinja2',
@@ -32,8 +31,9 @@ if __name__ == "__main__":
     ]
 
     # use "pip install -e .[dev]" to install required components + extra components
-    production = [
+    internal = [
         'vivarium_inputs[data]==4.0.2',
+        'vivarium_cluster_tools==1.2.3',
     ]
 
     interactive = [
@@ -61,7 +61,7 @@ if __name__ == "__main__":
         install_requires=install_requirements,
         extras_require={
             'interactive': interactive,
-            'dev': production + interactive,
+            'dev': internal + interactive,
         },
 
         zip_safe=False,
