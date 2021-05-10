@@ -85,7 +85,8 @@ def load_population_structure(key: str, location: str) -> pd.DataFrame:
 
 
 def load_age_bins(key: str, location: str) -> pd.DataFrame:
-    return interface.get_age_bins()
+    all_age_bins = interface.get_age_bins().reset_index()
+    return all_age_bins[all_age_bins.age_start < 5].set_index(['age_start', 'age_end', 'age_group_name'])
 
 
 def load_demographic_dimensions(key: str, location: str) -> pd.DataFrame:
