@@ -1,6 +1,6 @@
-input_draw_count: 10
-random_seed_count: 5
+input_draw_count: 12
+random_seed_count: 10
 
 branches:
-  - branch_name:
+  - intervention:
       scenario: ['baseline']
