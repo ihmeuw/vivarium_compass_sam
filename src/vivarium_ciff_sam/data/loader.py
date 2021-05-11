@@ -46,6 +46,7 @@ def get_data(lookup_key: str, location: str) -> pd.DataFrame:
         data_keys.POPULATION.DEMOGRAPHY: load_demographic_dimensions,
         data_keys.POPULATION.TMRLE: load_theoretical_minimum_risk_life_expectancy,
         data_keys.POPULATION.ACMR: load_standard_data,
+        data_keys.POPULATION.CRUDE_BIRTH_RATE: load_standard_data,
 
         data_keys.DIARRHEA.PREVALENCE: load_standard_data,
         data_keys.DIARRHEA.INCIDENCE_RATE: load_standard_data,
