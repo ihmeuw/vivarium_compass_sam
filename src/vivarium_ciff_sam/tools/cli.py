@@ -1,22 +1,3 @@
-"""
-Make model specifications
-
-click application that takes a template model specification file
-and locations for which to create model specs and uses jinja2 to
-render model specs with the correct location parameters plugged in.
-
-It will look for the model spec template in "model_spec.in" in the directory
-``src/vivarium_ciff_sam/model_specifications``.
-Add location strings to the ``src/vivarium_ciff_sam/constants/metadata.py``
-file. By default, specifications for all locations will be built. You can
-choose to make a model specification for a single location by specifying
-that location. However, the location string must exist in the list in
-`src/vivarium_ciff_sam/constants/metadata.py``.
-
-The application will look for the model spec based on the python environment
-that is active and these files don't need to be specified if the
-default names and location are used.
-"""
 import click
 from loguru import logger
 from vivarium.framework.utilities import handle_exceptions
