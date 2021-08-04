@@ -83,7 +83,14 @@ def get_data(lookup_key: str, location: str) -> pd.DataFrame:
         data_keys.WASTING.CATEGORIES: load_metadata,
         data_keys.WASTING.EXPOSURE: load_gbd_2020_exposure,
         data_keys.WASTING.RELATIVE_RISK: load_gbd_2020_rr,
-        data_keys.WASTING.PAF: load_child_wasting_paf,
+        data_keys.WASTING.PAF: load_paf,
+
+        data_keys.STUNTING.DISTRIBUTION: load_metadata,
+        data_keys.STUNTING.ALT_DISTRIBUTION: load_metadata,
+        data_keys.STUNTING.CATEGORIES: load_metadata,
+        data_keys.STUNTING.EXPOSURE: load_gbd_2020_exposure,
+        data_keys.STUNTING.RELATIVE_RISK: load_gbd_2020_rr,
+        data_keys.STUNTING.PAF: load_paf,
     }
     return mapping[lookup_key](lookup_key, location)
 
@@ -207,6 +214,13 @@ def load_gbd_2020_exposure(key: str, location: str) -> pd.DataFrame:
 
     data = data.filter(vi_globals.DEMOGRAPHIC_COLUMNS + vi_globals.DRAW_COLUMNS + ['parameter'])
     data = utilities.validate_and_reshape_child_wasting_data(data, entity, key, location)
+
+    if key == data_keys.STUNTING.EXPOSURE:
+        # Remove neonatal exposure
+        neonatal_age_ends = data.index.get_level_values('age_end').unique()[:2]
+        data.loc[data.index.get_level_values('age_end').isin(neonatal_age_ends)] = 0.0
+        data.loc[data.index.get_level_values('age_end').isin(neonatal_age_ends)
+                 & (data.index.get_level_values('parameter') == data_keys.STUNTING.CAT4)] = 1.0
     return data
 
 
@@ -243,17 +257,20 @@ def load_gbd_2020_rr(key: str, location: str) -> pd.DataFrame:
 
     data = utilities.validate_and_reshape_child_wasting_data(data, entity, key, location)
 
-    # Remove neonatal wasting relative risks
-    neonatal_age_ends = data.index.get_level_values('age_end').unique()[:2]
-    data.loc[data.index.get_level_values('age_end').isin(neonatal_age_ends)] = 1.0
+    if key in [data_keys.WASTING.RELATIVE_RISK, data_keys.STUNTING.RELATIVE_RISK]:
+        # Remove neonatal relative risks
+        neonatal_age_ends = data.index.get_level_values('age_end').unique()[:2]
+        data.loc[data.index.get_level_values('age_end').isin(neonatal_age_ends)] = 1.0
 
     return data
 
 
-def load_child_wasting_paf(key: str, location: str) -> pd.DataFrame:
-    if key == data_keys.WASTING.PAF:
-        exp = get_data(data_keys.WASTING.EXPOSURE, location)
-        rr = get_data(data_keys.WASTING.RELATIVE_RISK, location)
+def load_paf(key: str, location: str) -> pd.DataFrame:
+    if key in [data_keys.WASTING.PAF, data_keys.STUNTING.PAF]:
+        risk = data_keys.WASTING if key == data_keys.WASTING.PAF else data_keys.STUNTING
+
+        exp = get_data(risk.EXPOSURE, location)
+        rr = get_data(risk.RELATIVE_RISK, location)
 
         # paf = (sum_categories(exp * rr) - 1) / sum_categories(exp * rr)
         sum_exp_x_rr = (
