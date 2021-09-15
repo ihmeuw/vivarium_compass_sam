@@ -210,30 +210,24 @@ class __SQLNS(NamedTuple):
 SQ_LNS = __SQLNS()
 
 
-class __WastingTreatment(NamedTuple):
-    SAM_COVERAGE = 'wasting_treatment.sam_coverage'
-    MAM_COVERAGE = 'wasting_treatment.mam_coverage'
-    SAM_EFFECTIVE_COVERAGE = 'wasting_treatment.sam_effective_coverage'
-    MAM_EFFECTIVE_COVERAGE = 'wasting_treatment.mam_effective_coverage'
-    PROPENSITY = 'wasting_treatment.propensity'
-    EFFICACY_PROPENSITY = 'wasting_treatment.efficacy_propensity'
+class __WastingNonTreatment(NamedTuple):
 
-    # Coverage state names
-    UNTREATED = 'untreated'
-    NON_RESPONSIVE = 'non_responsive'
-    EFFECTIVELY_COVERED = 'effectively_covered'
-    INELIGIBLE = 'ineligible'
+    # Keys that will be loaded into the artifact. must have a colon type declaration
+    EXPOSURE: TargetString = 'risk_factor.wasting_non_treatment.exposure'
+    DISTRIBUTION: TargetString = 'risk_factor.wasting_non_treatment.distribution'
+    RELATIVE_RISK: TargetString = 'risk_factor.wasting_non_treatment.relative_risk'
+    PAF: TargetString = 'risk_factor.wasting_non_treatment.population_attributable_fraction'
 
     @property
     def name(self):
-        return 'wasting_treatment'
+        return 'wasting_non_treatment'
 
     @property
     def log_name(self):
-        return 'wasting treatment'
+        return 'wasting non-treatment'
 
 
-WASTING_TREATMENT = __WastingTreatment()
+WASTING_NON_TREATMENT = __WastingNonTreatment()
 
 
 MAKE_ARTIFACT_KEY_GROUPS = [
@@ -245,5 +239,5 @@ MAKE_ARTIFACT_KEY_GROUPS = [
     WASTING,
     STUNTING,
     SQ_LNS,
-    WASTING_TREATMENT,
+    WASTING_NON_TREATMENT,
 ]
