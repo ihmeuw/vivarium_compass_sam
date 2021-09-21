@@ -31,8 +31,9 @@ def make_measure_data(data):
         deaths=get_by_cause_measure_data(data, 'deaths'),
         disease_state_person_time=get_state_person_time_measure_data(data, 'disease_state_person_time'),
         disease_transition_count=get_transition_count_measure_data(data, 'disease_transition_count'),
-        wasting_state_person_time=get_state_person_time_measure_data(data, 'wasting_state_person_time', False, True),
-        wasting_transition_count=get_transition_count_measure_data(data, 'wasting_transition_count', False, True),
+        wasting_state_person_time=get_state_person_time_measure_data(data, 'wasting_state_person_time', False, True,
+                                                                     True),
+        wasting_transition_count=get_transition_count_measure_data(data, 'wasting_transition_count', False, True, True),
         stunting_state_person_time=get_state_person_time_measure_data(data, 'stunting_state_person_time', False, False,
                                                                       True)
     )
