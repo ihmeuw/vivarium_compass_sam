@@ -221,6 +221,8 @@ class __WastingTreatment(NamedTuple):
 
     # Useful keys not for the artifact - distinguished by not using the colon type declaration
     TMREL_CATEGORY = 'cat2'
+    COVERED_CATEGORIES = ['cat2', 'cat3']
+    UNCOVERED_CATEGORIES = ['cat1']
 
     @property
     def name(self):

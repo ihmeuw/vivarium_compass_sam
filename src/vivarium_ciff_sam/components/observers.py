@@ -39,8 +39,10 @@ class ResultsStratifier:
         self.pipelines = {}
         columns_required = ['tracked']
 
-        def get_state_function(column_name: str, state: Union[str, bool]) -> Callable:
-            return lambda pop: pop[column_name] == state
+        def get_state_function(column_name: str, state: Union[str, bool, List]) -> Callable:
+            return lambda pop: (pop[column_name] == state
+                                if not isinstance(state, List)
+                                else pop[column_name].isin(state))
 
         self.stratification_levels = {}
 
@@ -61,8 +63,9 @@ class ResultsStratifier:
         if self.by_wasting_treatment:
             wasting_treatment_key = data_keys.WASTING_TREATMENT.name
             self.stratification_levels['wasting_treatment'] = {
-                coverage: get_state_function(wasting_treatment_key, category)
-                for category, coverage in (('cat2', 'covered'), ('cat1', 'uncovered'))
+                coverage: get_state_function(wasting_treatment_key, categories)
+                for coverage, categories in (('covered', data_keys.WASTING_TREATMENT.COVERED_CATEGORIES),
+                                             ('uncovered', data_keys.WASTING_TREATMENT.UNCOVERED_CATEGORIES))
             }
             self.pipelines[wasting_treatment_key] = builder.value.get_value(f'{wasting_treatment_key}.exposure')
 
