@@ -75,18 +75,18 @@ configuration:
     intervention:
         scenario: 'baseline'
 
-    x_factor:
-        exposure: 0.187565
-
-    effect_of_x_factor_on_mild_child_wasting:
-        incidence_rate:
-            relative_risk: 1.1
-    effect_of_x_factor_on_mild_child_wasting_to_moderate_acute_malnutrition:
-        transition_rate:
-            relative_risk: 1.1
-    effect_of_x_factor_on_moderate_acute_malnutrition_to_severe_acute_malnutrition:
-        transition_rate:
-            relative_risk: 1.1
+#    x_factor:
+#        exposure: 0.187565
+#
+#    effect_of_x_factor_on_mild_child_wasting:
+#        incidence_rate:
+#            relative_risk: 1.1
+#    effect_of_x_factor_on_mild_child_wasting_to_moderate_acute_malnutrition:
+#        transition_rate:
+#            relative_risk: 1.1
+#    effect_of_x_factor_on_moderate_acute_malnutrition_to_severe_acute_malnutrition:
+#        transition_rate:
+#            relative_risk: 1.1
 
     metrics:
         disability:
