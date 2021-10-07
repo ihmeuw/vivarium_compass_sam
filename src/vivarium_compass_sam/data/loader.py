@@ -20,10 +20,10 @@ from vivarium.framework.artifact import EntityKey
 from vivarium_gbd_access import constants as gbd_constants
 from vivarium_inputs import globals as vi_globals, interface, utilities as vi_utils, utility_data
 
-from vivarium_ciff_sam.constants import data_keys, data_values, metadata
-from vivarium_ciff_sam.data import utilities
+from vivarium_compass_sam.constants import data_keys, data_values, metadata
+from vivarium_compass_sam.data import utilities
 
-from vivarium_ciff_sam.utilities import get_random_variable_draws
+from vivarium_compass_sam.utilities import get_random_variable_draws
 
 
 def get_data(lookup_key: str, location: str) -> pd.DataFrame:

@@ -11,7 +11,7 @@ from vivarium_public_health.risks import Risk
 from vivarium_public_health.risks.data_transformations import get_exposure_post_processor
 from vivarium_public_health.utilities import EntityString
 
-from vivarium_ciff_sam.constants import data_keys
+from vivarium_compass_sam.constants import data_keys
 
 
 class LBWSGRisk(Risk, ABC):

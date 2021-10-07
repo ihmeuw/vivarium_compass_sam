@@ -52,7 +52,7 @@ configuration:
     input_data:
         input_draw_number: 0
         location: 'Ethiopia'
-        artifact_path: '/ihme/costeffectiveness/artifacts/vivarium_ciff_sam/ethiopia.hdf'
+        artifact_path: '/ihme/costeffectiveness/artifacts/vivarium_compass_sam/ethiopia.hdf'
     interpolation:
         order: 0
         extrapolate: True

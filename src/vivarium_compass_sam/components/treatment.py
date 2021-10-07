@@ -3,8 +3,8 @@ import pandas as pd
 
 from vivarium.framework.engine import Builder
 
-from vivarium_ciff_sam.constants import data_keys, data_values, models
-from vivarium_ciff_sam.utilities import get_random_variable
+from vivarium_compass_sam.constants import data_keys, data_values, models
+from vivarium_compass_sam.utilities import get_random_variable
 
 
 class SQLNSTreatment:

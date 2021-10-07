@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Dict, NamedTuple, Tuple
 
-from vivarium_ciff_sam.utilities import get_norm_from_quantiles, get_lognorm_from_quantiles
+from vivarium_compass_sam.utilities import get_norm_from_quantiles, get_lognorm_from_quantiles
 
 #######################
 # Universal Constants #

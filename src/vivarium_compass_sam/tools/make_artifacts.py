@@ -17,9 +17,9 @@ from loguru import logger
 
 import vivarium_cluster_tools as vct
 
-from vivarium_ciff_sam.constants import data_keys, metadata
-from vivarium_ciff_sam.utilities import sanitize_location, delete_if_exists, len_longest_location
-from vivarium_ciff_sam.tools.app_logging import add_logging_sink, decode_status
+from vivarium_compass_sam.constants import data_keys, metadata
+from vivarium_compass_sam.utilities import sanitize_location, delete_if_exists, len_longest_location
+from vivarium_compass_sam.tools.app_logging import add_logging_sink, decode_status
 
 
 def running_from_cluster() -> bool:
@@ -182,7 +182,7 @@ def build_single_location_artifact(path: Union[str, Path], location: str, replac
         add_logging_sink(log_file, verbose=2)
 
     # Local import to avoid data dependencies
-    from vivarium_ciff_sam.data import builder
+    from vivarium_compass_sam.data import builder
 
     logger.info(f'Building artifact for {location} at {str(path)}.')
     artifact = builder.open_artifact(path, location)

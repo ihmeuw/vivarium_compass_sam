@@ -1,6 +1,6 @@
 from typing import List, Tuple
 
-from vivarium_ciff_sam.constants import data_keys
+from vivarium_compass_sam.constants import data_keys
 
 
 class TransitionString(str):

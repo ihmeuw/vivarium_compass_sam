@@ -4,7 +4,7 @@ from typing import NamedTuple
 # Project metadata #
 ####################
 
-PROJECT_NAME = 'vivarium_ciff_sam'
+PROJECT_NAME = 'vivarium_compass_sam'
 CLUSTER_PROJECT = 'proj_cost_effect'
 
 CLUSTER_QUEUE = 'all.q'

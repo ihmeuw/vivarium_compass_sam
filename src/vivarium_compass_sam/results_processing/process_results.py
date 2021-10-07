@@ -4,7 +4,7 @@ from typing import Dict, NamedTuple, Union
 import pandas as pd
 import yaml
 
-from vivarium_ciff_sam.constants import results
+from vivarium_compass_sam.constants import results
 
 
 SCENARIO_COLUMN = 'scenario'

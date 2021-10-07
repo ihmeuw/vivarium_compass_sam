@@ -12,7 +12,7 @@ from vivarium_public_health.metrics.utilities import (get_deaths, get_state_pers
                                                       get_years_lived_with_disability, get_years_of_life_lost,
                                                       TransitionString)
 
-from vivarium_ciff_sam.constants import models, results, data_keys
+from vivarium_compass_sam.constants import models, results, data_keys
 
 
 class ResultsStratifier:
