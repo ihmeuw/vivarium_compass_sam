@@ -2,7 +2,7 @@ import pandas as pd
 
 from vivarium.framework.engine import Builder
 
-from vivarium_ciff_sam.constants import data_keys, data_values, scenarios
+from vivarium_compass_sam.constants import data_keys, data_values, scenarios
 
 
 class SQLNSIntervention:

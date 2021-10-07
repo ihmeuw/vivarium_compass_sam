@@ -4,9 +4,9 @@ import click
 from loguru import logger
 from vivarium.framework.utilities import handle_exceptions
 
-from vivarium_ciff_sam import paths
-from vivarium_ciff_sam.constants import metadata
-from vivarium_ciff_sam.tools import build_artifacts, build_results, configure_logging_to_terminal
+from vivarium_compass_sam import paths
+from vivarium_compass_sam.constants import metadata
+from vivarium_compass_sam.tools import build_artifacts, build_results, configure_logging_to_terminal
 
 
 @click.command()

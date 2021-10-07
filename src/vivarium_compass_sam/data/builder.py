@@ -15,8 +15,8 @@ from loguru import logger
 import pandas as pd
 from vivarium.framework.artifact import Artifact, EntityKey
 
-from vivarium_ciff_sam.constants import data_keys
-from vivarium_ciff_sam.data import loader
+from vivarium_compass_sam.constants import data_keys
+from vivarium_compass_sam.data import loader
 
 
 def open_artifact(output_path: Path, location: str) -> Artifact:

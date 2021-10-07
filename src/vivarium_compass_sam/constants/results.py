@@ -1,6 +1,6 @@
 import itertools
 
-from vivarium_ciff_sam.constants import models
+from vivarium_compass_sam.constants import models
 
 #################################
 # Results columns and variables #

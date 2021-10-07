@@ -14,7 +14,7 @@ from vivarium_inputs.mapping_extension import alternative_risk_factors, Alternat
 from vivarium_inputs.validation.raw import check_metadata
 from vivarium_inputs.validation.sim import validate_for_simulation
 
-from vivarium_ciff_sam.constants.metadata import ARTIFACT_INDEX_COLUMNS, GBD_2020_AGE_GROUPS, GBD_2020_ROUND_ID
+from vivarium_compass_sam.constants.metadata import ARTIFACT_INDEX_COLUMNS, GBD_2020_AGE_GROUPS, GBD_2020_ROUND_ID
 
 
 def _load_em_from_meid(location, meid, measure):

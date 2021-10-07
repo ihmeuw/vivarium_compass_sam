@@ -10,7 +10,7 @@ if __name__ == "__main__":
     src_dir = os.path.join(base_dir, "src")
 
     about = {}
-    with open(os.path.join(src_dir, "vivarium_ciff_sam", "__about__.py")) as f:
+    with open(os.path.join(src_dir, "vivarium_compass_sam", "__about__.py")) as f:
         exec(f.read(), about)
 
     with open(os.path.join(base_dir, "README.rst")) as f:
@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
         entry_points='''
             [console_scripts]
-            make_artifacts=vivarium_ciff_sam.tools.cli:make_artifacts
-            make_results=vivarium_ciff_sam.tools.cli:make_results
+            make_artifacts=vivarium_compass_sam.tools.cli:make_artifacts
+            make_results=vivarium_compass_sam.tools.cli:make_results
         '''
     )

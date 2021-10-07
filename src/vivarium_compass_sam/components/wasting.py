@@ -8,9 +8,9 @@ from vivarium_public_health.risks.data_transformations import get_exposure_post_
 from vivarium_public_health.disease import DiseaseModel, DiseaseState, SusceptibleState
 from vivarium_public_health.utilities import EntityString
 
-from vivarium_ciff_sam.constants import data_keys, data_values, metadata, models
-from vivarium_ciff_sam.constants.data_keys import WASTING
-from vivarium_ciff_sam.utilities import get_random_variable
+from vivarium_compass_sam.constants import data_keys, data_values, metadata, models
+from vivarium_compass_sam.constants.data_keys import WASTING
+from vivarium_compass_sam.utilities import get_random_variable
 
 
 class RiskState(DiseaseState):

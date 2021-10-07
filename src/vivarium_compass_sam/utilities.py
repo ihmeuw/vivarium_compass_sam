@@ -10,7 +10,7 @@ from loguru import logger
 from vivarium.framework.randomness import get_hash
 # from vivarium_public_health.risks.data_transformations import pivot_categorical
 
-from vivarium_ciff_sam.constants import metadata
+from vivarium_compass_sam.constants import metadata
 
 
 def len_longest_location() -> int:
