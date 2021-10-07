@@ -1,8 +1,8 @@
 ===============================
-vivarium_ciff_sam
+vivarium_compass_sam
 ===============================
 
-Research repository for the vivarium_ciff_sam project.
+Research repository for the vivarium_compass_sam project.
 
 .. contents::
    :depth: 1
@@ -23,13 +23,13 @@ Once you have all three installed, you should open up your normal shell
 You'll then make an environment, clone this repository, then install
 all necessary requirements as follows::
 
-  :~$ conda create --name=vivarium_ciff_sam python=3.6
+  :~$ conda create --name=vivarium_compass_sam python=3.6
   ...conda will download python and base dependencies...
-  :~$ conda activate vivarium_ciff_sam
-  (vivarium_ciff_sam) :~$ git clone https://github.com/ihmeuw/vivarium_ciff_sam.git
+  :~$ conda activate vivarium_compass_sam
+  (vivarium_compass_sam) :~$ git clone https://github.com/ihmeuw/vivarium_compass_sam.git
   ...git will copy the repository from github and place it in your current directory...
-  (vivarium_ciff_sam) :~$ cd vivarium_ciff_sam
-  (vivarium_ciff_sam) :~$ pip install -e .
+  (vivarium_compass_sam) :~$ cd vivarium_compass_sam
+  (vivarium_compass_sam) :~$ pip install -e .
   ...pip will install vivarium and other requirements...
 
 
@@ -50,9 +50,9 @@ not something that can be specified and installed with the rest of the package's
 dependencies via ``pip``. If you encounter HDF5-related errors, you should
 install hdf tooling from within your environment like so::
 
-  (vivarium_ciff_sam) :~$ conda install hdf5
+  (vivarium_compass_sam) :~$ conda install hdf5
 
-The ``(vivarium_ciff_sam)`` that precedes your shell prompt will probably show
+The ``(vivarium_compass_sam)`` that precedes your shell prompt will probably show
 up by default, though it may not.  It's just a visual reminder that you
 are installing and running things in an isolated programming environment
 so it doesn't conflict with other source code and libraries on your
@@ -63,7 +63,7 @@ Usage
 -----
 
 You'll find six directories inside the main
-``src/vivarium_ciff_sam`` package directory:
+``src/vivarium_compass_sam`` package directory:
 
 - ``artifacts``
 
@@ -74,7 +74,7 @@ You'll find six directories inside the main
 - ``components``
 
   This directory is for Python modules containing custom components for
-  the vivarium_ciff_sam project. You should work with the
+  the vivarium_compass_sam project. You should work with the
   engineering staff to help scope out what you need and get them built.
 
 - ``data``
@@ -108,14 +108,14 @@ complete description of a vivarium model. The command to generate model
 specifications is installed with this repository and it can be run
 from any directory.::
 
-  (vivarium_ciff_sam) :~$ make_specs -v
-  2020-06-18 18:18:28.311 | 0:00:00.679701 | build_model_specifications:48 - Writing model spec(s) to "/REPO_INSTALLATION_DIRECTORY/vivarium_ciff_sam/src/vivarium_ciff_sam/model_specifications"
+  (vivarium_compass_sam) :~$ make_specs -v
+  2020-06-18 18:18:28.311 | 0:00:00.679701 | build_model_specifications:48 - Writing model spec(s) to "/REPO_INSTALLATION_DIRECTORY/vivarium_compass_sam/src/vivarium_compass_sam/model_specifications"
 
 As the log message indicates, the model specifications will be written to
 the ``model_specifications`` subdirectory in this repository. You can then
 run simulations by, e.g.::
 
-   (vivarium_ciff_sam) :~$ simulate run -v /<REPO_INSTALLATION_DIRECTORY>/vivarium_ciff_sam/src/vivarium_ciff_sam/model_specifications/china.yaml
+   (vivarium_compass_sam) :~$ simulate run -v /<REPO_INSTALLATION_DIRECTORY>/vivarium_compass_sam/src/vivarium_compass_sam/model_specifications/china.yaml
 
 The ``-v`` flag will log verbosely, so you will get log messages every time
 step. For more ways to run simulations, see the tutorials at

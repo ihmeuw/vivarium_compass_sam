@@ -5,7 +5,7 @@ __all__ = [
 
 __title__ = "vivarium_compass_sam"
 __summary__ = "Research repository for the vivarium_compass_sam project."
-__uri__ = "https://github.com/ihmeuw/vivarium_ciff_sam"
+__uri__ = "https://github.com/ihmeuw/vivarium_compass_sam"
 
 __version__ = "1.0.0"
 

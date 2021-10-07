@@ -29,7 +29,7 @@ components:
 
             - Risk('risk_factor.low_birth_weight_and_short_gestation')
 
-    vivarium_ciff_sam:
+    vivarium_compass_sam:
         components:
             - ChildWasting()
             - LowBirthWeight()
