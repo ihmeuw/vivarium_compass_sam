@@ -59,21 +59,6 @@ def get_data(lookup_key: str, location: str) -> pd.DataFrame:
         data_keys.DIARRHEA.CSMR: load_standard_gbd_2019_data_as_gbd_2020_data,
         data_keys.DIARRHEA.RESTRICTIONS: load_metadata,
 
-        data_keys.MEASLES.PREVALENCE: load_standard_gbd_2019_data_as_gbd_2020_data,
-        data_keys.MEASLES.INCIDENCE_RATE: load_standard_gbd_2019_data_as_gbd_2020_data,
-        data_keys.MEASLES.DISABILITY_WEIGHT: load_standard_gbd_2019_data_as_gbd_2020_data,
-        data_keys.MEASLES.EMR: load_standard_gbd_2019_data_as_gbd_2020_data,
-        data_keys.MEASLES.CSMR: load_standard_gbd_2019_data_as_gbd_2020_data,
-        data_keys.MEASLES.RESTRICTIONS: load_metadata,
-
-        data_keys.LRI.PREVALENCE: load_lri_prevalence,
-        data_keys.LRI.INCIDENCE_RATE: load_standard_gbd_2019_data_as_gbd_2020_data,
-        data_keys.LRI.REMISSION_RATE: load_standard_gbd_2019_data_as_gbd_2020_data,
-        data_keys.LRI.DISABILITY_WEIGHT: load_standard_gbd_2019_data_as_gbd_2020_data,
-        data_keys.LRI.EMR: load_lri_excess_mortality_rate,
-        data_keys.LRI.CSMR: load_standard_gbd_2019_data_as_gbd_2020_data,
-        data_keys.LRI.RESTRICTIONS: load_metadata,
-
         data_keys.PEM.MAM_DISABILITY_WEIGHT: load_pem_disability_weight,
         data_keys.PEM.SAM_DISABILITY_WEIGHT: load_pem_disability_weight,
         data_keys.PEM.EMR: load_standard_gbd_2019_data_as_gbd_2020_data,
@@ -87,26 +72,11 @@ def get_data(lookup_key: str, location: str) -> pd.DataFrame:
         data_keys.WASTING.RELATIVE_RISK: load_gbd_2020_rr,
         data_keys.WASTING.PAF: load_paf,
 
-        data_keys.STUNTING.DISTRIBUTION: load_metadata,
-        data_keys.STUNTING.ALT_DISTRIBUTION: load_metadata,
-        data_keys.STUNTING.CATEGORIES: load_metadata,
-        data_keys.STUNTING.EXPOSURE: load_gbd_2020_exposure,
-        data_keys.STUNTING.RELATIVE_RISK: load_gbd_2020_rr,
-        data_keys.STUNTING.PAF: load_paf,
-
         data_keys.WASTING_TREATMENT.DISTRIBUTION: load_wasting_treatment_distribution,
         data_keys.WASTING_TREATMENT.CATEGORIES: load_wasting_treatment_categories,
         data_keys.WASTING_TREATMENT.EXPOSURE: load_wasting_treatment_exposure,
         data_keys.WASTING_TREATMENT.RELATIVE_RISK: load_wasting_treatment_rr,
         data_keys.WASTING_TREATMENT.PAF: load_paf,
-
-        data_keys.X_FACTOR.DISTRIBUTION: load_low_maternal_bmi_distribution,
-        data_keys.X_FACTOR.CATEGORIES: load_low_maternal_bmi_categories,
-        data_keys.X_FACTOR.EXPOSURE: load_low_maternal_bmi_exposure,
-
-        data_keys.LBWSG.DISTRIBUTION: load_metadata,
-        data_keys.LBWSG.CATEGORIES: load_metadata,
-        data_keys.LBWSG.EXPOSURE: load_lbwsg_exposure,
     }
     return mapping[lookup_key](lookup_key, location)
 
@@ -170,30 +140,6 @@ def load_standard_gbd_2019_data_as_gbd_2020_data(key: str, location: str) -> pd.
     return utilities.reshape_gbd_2019_data_as_gbd_2020_data(gbd_2019_data)
 
 
-def load_lri_prevalence(key: str, location: str) -> pd.DataFrame:
-    if key == data_keys.LRI.PREVALENCE:
-        incidence_rate = get_data(data_keys.LRI.INCIDENCE_RATE, location)
-        early_neonatal_prevalence = (incidence_rate[incidence_rate.index.get_level_values('age_start') == 0.0]
-                                     * data_values.EARLY_NEONATAL_CAUSE_DURATION / 365)
-        all_other_prevalence = (incidence_rate[incidence_rate.index.get_level_values('age_start') != 0.0]
-                                * data_values.LRI_DURATION / 365)
-        prevalence = pd.concat([early_neonatal_prevalence, all_other_prevalence])
-        return prevalence
-    else:
-        raise ValueError(f'Unrecognized key {key}')
-
-
-def load_lri_excess_mortality_rate(key: str, location: str) -> pd.DataFrame:
-    if key == data_keys.LRI.EMR:
-        csmr = get_data(data_keys.LRI.CSMR, location)
-        prevalence = get_data(data_keys.LRI.PREVALENCE, location)
-        data = (csmr / prevalence).fillna(0)
-        data = data.replace([np.inf, -np.inf], 0)
-        return data
-    else:
-        raise ValueError(f'Unrecognized key {key}')
-
-
 def load_gbd_2020_exposure(key: str, location: str) -> pd.DataFrame:
     key = EntityKey(key)
     entity = utilities.get_gbd_2020_entity(key)
@@ -202,13 +148,6 @@ def load_gbd_2020_exposure(key: str, location: str) -> pd.DataFrame:
                               metadata.GBD_2020_AGE_GROUPS, metadata.GBD_2020_ROUND_ID)
     data = utilities.process_exposure(data, key, entity, location, metadata.GBD_2020_AGE_GROUPS,
                                       metadata.GBD_2020_ROUND_ID)
-
-    if key == data_keys.STUNTING.EXPOSURE:
-        # Remove neonatal exposure
-        neonatal_age_ends = data.index.get_level_values('age_end').unique()[:2]
-        data.loc[data.index.get_level_values('age_end').isin(neonatal_age_ends)] = 0.0
-        data.loc[data.index.get_level_values('age_end').isin(neonatal_age_ends)
-                 & (data.index.get_level_values('parameter') == data_keys.STUNTING.CAT4)] = 1.0
     return data
 
 
@@ -246,12 +185,7 @@ def load_gbd_2020_rr(key: str, location: str) -> pd.DataFrame:
 
     data = utilities.validate_and_reshape_gbd_data(data, entity, key, location, metadata.GBD_2020_AGE_GROUPS,
                                                    metadata.GBD_2020_ROUND_ID)
-
-    if key == data_keys.STUNTING.RELATIVE_RISK:
-        # Remove neonatal relative risks
-        neonatal_age_ends = data.index.get_level_values('age_end').unique()[:2]
-        data.loc[data.index.get_level_values('age_end').isin(neonatal_age_ends)] = 1.0
-    elif key == data_keys.WASTING.RELATIVE_RISK:
+    if key == data_keys.WASTING.RELATIVE_RISK:
         # Remove relative risks for simulants under 6 months
         data.loc[data.index.get_level_values('age_end') <= data_values.WASTING.START_AGE] = 1.0
 
@@ -259,10 +193,9 @@ def load_gbd_2020_rr(key: str, location: str) -> pd.DataFrame:
 
 
 def load_paf(key: str, location: str) -> pd.DataFrame:
-    if key in [data_keys.WASTING.PAF, data_keys.STUNTING.PAF, data_keys.WASTING_TREATMENT.PAF]:
+    if key in [data_keys.WASTING.PAF, data_keys.WASTING_TREATMENT.PAF]:
         risk = {
             data_keys.WASTING.PAF: data_keys.WASTING,
-            data_keys.STUNTING.PAF: data_keys.STUNTING,
             data_keys.WASTING_TREATMENT.PAF: data_keys.WASTING_TREATMENT
         }[key]
 
@@ -423,51 +356,5 @@ def load_wasting_treatment_rr(key: str, location: str) -> pd.DataFrame:
         rr.index = rr.index.reorder_levels([col for col in rr.index.names if col != 'parameter'] + ['parameter'])
         rr.sort_index()
         return rr
-    else:
-        raise ValueError(f'Unrecognized key {key}')
-
-
-# noinspection PyUnusedLocal
-def load_low_maternal_bmi_distribution(key: str, location: str) -> str:
-    if key in [data_keys.X_FACTOR.DISTRIBUTION]:
-        return data_values.MATERNAL_BMI.DISTRIBUTION
-    else:
-        raise ValueError(f'Unrecognized key {key}')
-
-
-# noinspection PyUnusedLocal
-def load_low_maternal_bmi_categories(key: str, location: str) -> str:
-    if key in [data_keys.X_FACTOR.CATEGORIES]:
-        return data_values.MATERNAL_BMI.CATEGORIES
-    else:
-        raise ValueError(f'Unrecognized key {key}')
-
-
-def load_low_maternal_bmi_exposure(key: str, location: str) -> pd.DataFrame:
-    if key in [data_keys.X_FACTOR.EXPOSURE]:
-        exposure = get_random_variable_draws(pd.Index([f'draw_{i}' for i in range(0, 1000)]),
-                                             *data_values.MATERNAL_BMI.EXPOSURE)
-
-        idx = get_data(data_keys.POPULATION.DEMOGRAPHY, location).index
-        cat1 = pd.DataFrame({f'draw_{i}': 1.0 for i in range(0, 1000)}, index=idx) * exposure
-        cat2 = 1 - cat1
-
-        cat1['parameter'] = 'cat1'
-        cat2['parameter'] = 'cat2'
-
-        exposure = pd.concat([cat1, cat2]).set_index('parameter', append=True).sort_index()
-        return exposure
-
-
-def load_lbwsg_exposure(key: str, location: str) -> pd.DataFrame:
-    if key == data_keys.LBWSG.EXPOSURE:
-        key = EntityKey(key)
-        entity = utilities.get_entity(key)
-        data = utilities.get_data(key, entity, location, gbd_constants.SOURCES.EXPOSURE, 'rei_id',
-                                  metadata.GBD_2019_LBWSG_AGE_GROUPS, metadata.GBD_2019_ROUND_ID, 'step4')
-        data = data[data['year_id'] == 2019].drop(columns='year_id')
-        data = utilities.process_exposure(data, key, entity, location, metadata.GBD_2019_LBWSG_AGE_GROUPS,
-                                          metadata.GBD_2019_ROUND_ID)
-        return data
     else:
         raise ValueError(f'Unrecognized key {key}')

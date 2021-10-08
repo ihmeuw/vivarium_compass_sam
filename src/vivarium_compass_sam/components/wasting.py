@@ -432,8 +432,6 @@ def load_daily_mortality_probabilities(builder: Builder) -> pd.DataFrame:
     # ---------- Load mortality rate input data ---------- #
     causes = [
         data_keys.DIARRHEA,
-        data_keys.MEASLES,
-        data_keys.LRI,
         data_keys.PEM,
     ]
 
@@ -481,8 +479,8 @@ def load_daily_mortality_probabilities(builder: Builder) -> pd.DataFrame:
     # duration_c
     # index = [ 'sex', 'age_start', 'age_end', 'year_start', 'year_end', 'affected_entity', 'parameter ]
     duration_c = pd.Series(
-        [data_values.DIARRHEA_DURATION, data_values.MEASLES_DURATION, data_values.LRI_DURATION],
-        index=pd.Index([data_keys.DIARRHEA.name, data_keys.MEASLES.name, data_keys.LRI.name], name='affected_entity')
+        [data_values.DIARRHEA_DURATION],
+        index=pd.Index([data_keys.DIARRHEA.name], name='affected_entity')
     ).reindex(index=rr_ci.index, level='affected_entity')
     duration_c.loc[duration_c.index.get_level_values('age_start') == 0.0] = data_values.EARLY_NEONATAL_CAUSE_DURATION
     duration_c = duration_c / data_values.YEAR_DURATION   # convert to duration in years
