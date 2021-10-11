@@ -8,11 +8,9 @@ from vivarium_compass_sam.constants import results
 
 
 SCENARIO_COLUMN = 'scenario'
-X_FACTOR_COLUMN = 'x_factor_effect'
 GROUPBY_COLUMNS = [
     results.INPUT_DRAW_COLUMN,
     SCENARIO_COLUMN,
-    X_FACTOR_COLUMN,
 ]
 OUTPUT_COLUMN_SORT_ORDER = [
     'age_group',
@@ -33,12 +31,8 @@ def make_measure_data(data):
         deaths=get_by_cause_measure_data(data, 'deaths'),
         disease_state_person_time=get_state_person_time_measure_data(data, 'disease_state_person_time'),
         disease_transition_count=get_transition_count_measure_data(data, 'disease_transition_count'),
-        wasting_state_person_time=get_state_person_time_measure_data(data, 'wasting_state_person_time', False, True,
-                                                                     True, True),
-        wasting_transition_count=get_transition_count_measure_data(data, 'wasting_transition_count', False, True, True,
-                                                                   True),
-        stunting_state_person_time=get_state_person_time_measure_data(data, 'stunting_state_person_time', False, False,
-                                                                      True)
+        wasting_state_person_time=get_state_person_time_measure_data(data, 'wasting_state_person_time', False, True),
+        wasting_transition_count=get_transition_count_measure_data(data, 'wasting_transition_count', False, True),
     )
     return measure_data
 
@@ -52,7 +46,6 @@ class MeasureData(NamedTuple):
     disease_transition_count: pd.DataFrame
     wasting_state_person_time: pd.DataFrame
     wasting_transition_count: pd.DataFrame
-    stunting_state_person_time: pd.DataFrame
 
     def dump(self, output_dir: Path):
         for key, df in self._asdict().items():
@@ -65,18 +58,15 @@ def read_data(path: Path, single_run: bool) -> (pd.DataFrame, Dict[str, Union[st
     # noinspection PyUnresolvedReferences
     data = (data
             .reset_index(drop=True)
-            .rename(columns={results.OUTPUT_SCENARIO_COLUMN: SCENARIO_COLUMN,
-                             results.X_FACTOR_EFFECT_COLUMN: X_FACTOR_COLUMN})
+            .rename(columns={results.OUTPUT_SCENARIO_COLUMN: SCENARIO_COLUMN})
             )
     if single_run:
         data[results.INPUT_DRAW_COLUMN] = 0
         data[results.RANDOM_SEED_COLUMN] = 0
         data[SCENARIO_COLUMN] = 'baseline'
-        data[X_FACTOR_COLUMN] = 1.1
         keyspace = {results.INPUT_DRAW_COLUMN: [0],
                     results.RANDOM_SEED_COLUMN: [0],
-                    results.OUTPUT_SCENARIO_COLUMN: ['baseline'],
-                    results.X_FACTOR_EFFECT_COLUMN: [1.1]}
+                    results.OUTPUT_SCENARIO_COLUMN: ['baseline']}
     else:
         data[results.INPUT_DRAW_COLUMN] = data[results.INPUT_DRAW_COLUMN].astype(int)
         data[results.RANDOM_SEED_COLUMN] = data[results.RANDOM_SEED_COLUMN].astype(int)
@@ -92,12 +82,11 @@ def filter_out_incomplete(data: pd.DataFrame, keyspace: Dict[str, Union[str, int
         random_seeds = set(keyspace[results.RANDOM_SEED_COLUMN])
         draw_data = data.loc[data[results.INPUT_DRAW_COLUMN] == draw]
         for scenario in keyspace[results.OUTPUT_SCENARIO_COLUMN]:
-            for x_factor_effect in keyspace[results.X_FACTOR_EFFECT_COLUMN]:
-                seeds_in_data = draw_data.loc[
-                    (data[SCENARIO_COLUMN] == scenario) & (data[X_FACTOR_COLUMN] == x_factor_effect),
-                    results.RANDOM_SEED_COLUMN
-                ].unique()
-                random_seeds = random_seeds.intersection(seeds_in_data)
+            seeds_in_data = draw_data.loc[
+                data[SCENARIO_COLUMN] == scenario,
+                results.RANDOM_SEED_COLUMN
+            ].unique()
+            random_seeds = random_seeds.intersection(seeds_in_data)
         draw_data = draw_data.loc[draw_data[results.RANDOM_SEED_COLUMN].isin(random_seeds)]
         output.append(draw_data)
     return pd.concat(output, ignore_index=True).reset_index(drop=True)
@@ -133,15 +122,7 @@ def sort_data(data: pd.DataFrame) -> pd.DataFrame:
 
 
 def split_processing_column(data: pd.DataFrame, has_wasting_stratification: bool = True,
-                            has_wasting_treatment_stratification: bool = False, has_sqlns_stratification: bool = False,
-                            has_x_factor_stratification: bool = False,
-                            has_stunting_stratification: bool = False) -> pd.DataFrame:
-    if has_stunting_stratification:
-        data['process'], data['stunting_state'] = data.process.str.split(f'_stunting_state_').str
-    if has_x_factor_stratification:
-        data['process'], data['x_factor'] = data.process.str.split(f'_x_factor_').str
-    if has_sqlns_stratification:
-        data['process'], data['sq_lns'] = data.process.str.split(f'_sq_lns_').str
+                            has_wasting_treatment_stratification: bool = False) -> pd.DataFrame:
     if has_wasting_treatment_stratification:
         data['process'], data['wasting_treatment'] = data.process.str.split(f'_wasting_treatment_').str
     if has_wasting_stratification:
@@ -162,42 +143,29 @@ def get_population_data(data: pd.DataFrame) -> pd.DataFrame:
 
 
 def get_measure_data(data: pd.DataFrame, measure: str, has_wasting_stratification: bool = True,
-                     has_wasting_treatment_stratification: bool = False, has_sqlns_stratification: bool = False,
-                     has_x_factor_stratification: bool = False,
-                     has_stunting_stratification: bool = False) -> pd.DataFrame:
+                     has_wasting_treatment_stratification: bool = False) -> pd.DataFrame:
     data = pivot_data(data[results.RESULT_COLUMNS(measure) + GROUPBY_COLUMNS])
-    data = split_processing_column(data, has_wasting_stratification, has_wasting_treatment_stratification,
-                                   has_sqlns_stratification, has_x_factor_stratification, has_stunting_stratification)
+    data = split_processing_column(data, has_wasting_stratification, has_wasting_treatment_stratification)
     return sort_data(data)
 
 
 def get_by_cause_measure_data(data: pd.DataFrame, measure: str, has_wasting_stratification: bool = True,
-                              has_wasting_treatment_stratification: bool = False,
-                              has_sqlns_stratification: bool = False, has_x_factor_stratification: bool = False,
-                              has_stunting_stratification: bool = False) -> pd.DataFrame:
-    data = get_measure_data(data, measure, has_wasting_stratification, has_wasting_treatment_stratification,
-                            has_sqlns_stratification, has_x_factor_stratification, has_stunting_stratification)
+                              has_wasting_treatment_stratification: bool = False) -> pd.DataFrame:
+    data = get_measure_data(data, measure, has_wasting_stratification, has_wasting_treatment_stratification)
     data['measure'], data['cause'] = data.measure.str.split('_due_to_').str
     return sort_data(data)
 
 
 def get_state_person_time_measure_data(data: pd.DataFrame, measure: str, has_wasting_stratification: bool = True,
-                                       has_wasting_treatment_stratification: bool = False,
-                                       has_sqlns_stratification: bool = False,
-                                       has_x_factor_stratification: bool = False,
-                                       has_stunting_stratification: bool = False) -> pd.DataFrame:
-    data = get_measure_data(data, measure, has_wasting_stratification, has_wasting_treatment_stratification,
-                            has_sqlns_stratification, has_x_factor_stratification, has_stunting_stratification)
+                                       has_wasting_treatment_stratification: bool = False) -> pd.DataFrame:
+    data = get_measure_data(data, measure, has_wasting_stratification, has_wasting_treatment_stratification)
     data['measure'], data['cause'] = 'state_person_time', data.measure.str.split('_person_time').str[0]
     return sort_data(data)
 
 
 def get_transition_count_measure_data(data: pd.DataFrame, measure: str, has_wasting_stratification: bool = True,
-                                      has_wasting_treatment_stratification: bool = False,
-                                      has_sqlns_stratification: bool = False, has_x_factor_stratification: bool = False,
-                                      has_stunting_stratification: bool = False) -> pd.DataFrame:
+                                      has_wasting_treatment_stratification: bool = False) -> pd.DataFrame:
     # Oops, edge case.
     data = data.drop(columns=[c for c in data.columns if 'event_count' in c and '2027' in c])
-    data = get_measure_data(data, measure, has_wasting_stratification, has_wasting_treatment_stratification,
-                            has_sqlns_stratification, has_x_factor_stratification, has_stunting_stratification)
+    data = get_measure_data(data, measure, has_wasting_stratification, has_wasting_treatment_stratification)
     return sort_data(data)

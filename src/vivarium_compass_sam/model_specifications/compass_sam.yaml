@@ -1,0 +1,72 @@
+components:
+    vivarium_public_health:
+        population:
+            - BasePopulation()
+            - Mortality()
+            - FertilityCrudeBirthRate()
+        disease:
+            - SIS('diarrheal_diseases')
+        risks:
+            - Risk('risk_factor.wasting_treatment')
+            - RiskEffect('risk_factor.wasting_treatment', 'risk_factor.severe_acute_malnutrition_to_mild_child_wasting.transition_rate')
+            - RiskEffect('risk_factor.wasting_treatment', 'risk_factor.severe_acute_malnutrition_to_moderate_acute_malnutrition.transition_rate')
+            - RiskEffect('risk_factor.wasting_treatment', 'risk_factor.moderate_acute_malnutrition_to_mild_child_wasting.transition_rate')
+
+    vivarium_compass_sam:
+        components:
+            - ChildWasting()
+            - WastingTreatmentIntervention()
+
+            - DisabilityObserver('wasting')
+            - MortalityObserver('wasting')
+            - DiseaseObserver('diarrheal_diseases', 'wasting')
+            - DiseaseObserver('child_wasting', 'False', 'False', 'wasting_treatment', 'False')
+
+configuration:
+    input_data:
+        input_draw_number: 0
+        location: 'Ethiopia'
+        artifact_path: '/ihme/costeffectiveness/artifacts/vivarium_compass_sam/ethiopia.hdf'
+    interpolation:
+        order: 0
+        extrapolate: True
+    randomness:
+        map_size: 1_000_000
+        key_columns: ['entrance_time', 'age']
+        random_seed: 0
+    time:
+        start:
+            year: 2022
+            month: 1
+            day: 1
+        end:
+            year: 2026
+            month: 12
+            day: 31
+        step_size: 0.5 # Days
+    population:
+        population_size: 10000
+        age_start: 0
+        age_end: 5
+        exit_age: 5
+
+    intervention:
+        scenario: 'baseline'
+
+    metrics:
+        disability:
+            by_age: True
+            by_sex: True
+            by_year: True
+        mortality:
+            by_age: True
+            by_sex: True
+            by_year: True
+        diarrheal_diseases_observer:
+            by_age: True
+            by_sex: True
+            by_year: True
+        child_wasting_observer:
+            by_age: True
+            by_sex: True
+            by_year: True

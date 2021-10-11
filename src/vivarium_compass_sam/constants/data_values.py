@@ -6,8 +6,8 @@ from vivarium_compass_sam.utilities import get_norm_from_quantiles, get_lognorm_
 #######################
 # Universal Constants #
 #######################
-
 YEAR_DURATION: float = 365.25
+
 
 ##########################
 # Cause Model Parameters #
@@ -15,12 +15,6 @@ YEAR_DURATION: float = 365.25
 
 # diarrhea duration in days
 DIARRHEA_DURATION: int = 10
-
-# measles duration in days
-MEASLES_DURATION: int = 10
-
-# LRI duration in days
-LRI_DURATION: int = 10
 
 # duration > bin_duration, so there is effectively no remission,
 # and duration within the bin is bin_duration / 2
@@ -70,42 +64,7 @@ class __Wasting(NamedTuple):
 WASTING = __Wasting()
 
 
-###########################
-# Maternal BMI Parameters #
-###########################
-class __MaternalBMI(NamedTuple):
-    DISTRIBUTION: str = 'dichotomous'
-    CATEGORIES: Dict[str, str] = {
-        'cat1': 'BMI < 18.5',
-        'cat2': 'BMI >= 18.5',
-    }
-
-    EXPOSURE: Tuple = ('maternal_bmi_exposure', get_norm_from_quantiles(mean=0.224, lower=0.217, upper=0.231))
-
-
-MATERNAL_BMI = __MaternalBMI()
-
-
-######################################
-# Treatment and Prevention Constants #
-######################################
-class __SQLNS(NamedTuple):
-    COVERAGE_START_AGE: float = 0.5
-    COVERAGE_BASELINE: float = 0.0
-    COVERAGE_RAMP_UP: float = 0.9
-    RISK_RATIO_WASTING: Tuple = ('sq_lns_wasting_effect',
-                                 get_lognorm_from_quantiles(median=0.82, lower=0.74, upper=0.91))
-    RISK_RATIO_STUNTING_SEVERE: Tuple = ('sq_lns_severe_stunting_effect',
-                                         get_lognorm_from_quantiles(median=0.85, lower=0.74, upper=0.98))
-    RISK_RATIO_STUNTING_MODERATE: Tuple = ('sq_lns_moderate_stunting_effect',
-                                           get_lognorm_from_quantiles(median=0.93, lower=0.88, upper=0.98))
-
-
-SQ_LNS = __SQLNS()
-
-
 ###################################
 # Scale-up Intervention Constants #
 ###################################
-
 SCALE_UP_START_DT = datetime(2023, 1, 1)
