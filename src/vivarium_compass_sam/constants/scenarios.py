@@ -4,11 +4,11 @@
 
 class Scenario:
 
-    def __init__(self, has_alternative_treatment: bool):
-        self.has_alternative_treatment = has_alternative_treatment
+    def __init__(self, has_wasting_prevention: bool):
+        self.has_sqlns = has_wasting_prevention
 
 
 SCENARIOS = {
     'baseline': Scenario(False),
-    'wasting_treatment': Scenario(True),
+    'sqlns': Scenario(True),
 }

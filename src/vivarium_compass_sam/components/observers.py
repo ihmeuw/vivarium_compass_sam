@@ -5,12 +5,10 @@ import pandas as pd
 from vivarium.framework.engine import Builder
 from vivarium.framework.event import Event
 from vivarium_public_health.metrics import (MortalityObserver as MortalityObserver_,
-                                            DisabilityObserver as DisabilityObserver_,
                                             DiseaseObserver as DiseaseObserver_,
                                             CategoricalRiskObserver as CategoricalRiskObserver_)
 from vivarium_public_health.metrics.utilities import (get_deaths, get_state_person_time, get_transition_count,
-                                                      get_years_lived_with_disability, get_years_of_life_lost,
-                                                      TransitionString)
+                                                      get_years_of_life_lost, TransitionString)
 
 from vivarium_compass_sam.constants import models, results, data_keys
 
@@ -25,14 +23,10 @@ class ResultsStratifier:
 
     """
 
-    def __init__(self, observer_name: str, by_wasting: str, by_sqlns: str, by_wasting_treatment: str, by_x_factor: str,
-                 by_stunting: str):
+    def __init__(self, observer_name: str, by_wasting: str, by_sqlns: str):
         self.name = f'{observer_name}_results_stratifier'
         self.by_wasting = by_wasting != 'False'
         self.by_sqlns = by_sqlns != 'False'
-        self.by_wasting_treatment = by_wasting_treatment != 'False'
-        self.by_x_factor = by_x_factor != 'False'
-        self.by_stunting = by_stunting != 'False'
 
     # noinspection PyAttributeOutsideInit
     def setup(self, builder: Builder):
@@ -50,26 +44,10 @@ class ResultsStratifier:
 
         if self.by_wasting:
             self.stratification_levels['wasting_state'] = {
-                wasting_state: get_state_function(data_keys.WASTING.name, wasting_state)
-                for wasting_state in models.WASTING.STATES
-            }
-            columns_required.append(data_keys.WASTING.name)
-
-        if self.by_stunting:
-            self.stratification_levels['stunting_state'] = {
-                f'cat{i}': get_state_function(data_keys.STUNTING.name, f'cat{i}')
+                f'cat{i}': get_state_function(data_keys.WASTING.name, f'cat{i}')
                 for i in range(4, 0, -1)
             }
-            self.pipelines[data_keys.STUNTING.name] = builder.value.get_value(f'{data_keys.STUNTING.name}.exposure')
-
-        if self.by_wasting_treatment:
-            wasting_treatment_key = data_keys.WASTING_TREATMENT.name
-            self.stratification_levels['wasting_treatment'] = {
-                coverage: get_state_function(wasting_treatment_key, categories)
-                for coverage, categories in (('covered', data_keys.WASTING_TREATMENT.COVERED_CATEGORIES),
-                                             ('uncovered', data_keys.WASTING_TREATMENT.UNCOVERED_CATEGORIES))
-            }
-            self.pipelines[wasting_treatment_key] = builder.value.get_value(f'{wasting_treatment_key}.exposure')
+            self.pipelines[data_keys.WASTING.name] = builder.value.get_value(f'{data_keys.WASTING.name}.exposure')
 
         if self.by_sqlns:
             self.stratification_levels['sq_lns'] = {
@@ -77,13 +55,6 @@ class ResultsStratifier:
                 for coverage in ['covered', 'uncovered']
             }
             self.pipelines[data_keys.SQ_LNS.name] = builder.value.get_value(data_keys.SQ_LNS.COVERAGE)
-
-        if self.by_x_factor:
-            self.stratification_levels['x_factor'] = {
-                category: get_state_function('x_factor', category)
-                for category in ('cat2', 'cat1')
-            }
-            self.pipelines['x_factor'] = builder.value.get_value('x_factor.exposure')
 
         self.population_view = builder.population.get_view(columns_required)
         self.stratification_groups: pd.Series = None
@@ -186,12 +157,9 @@ class ResultsStratifier:
 
 class MortalityObserver(MortalityObserver_):
 
-    def __init__(self, stratify_by_wasting: str = 'wasting', stratify_by_sq_lns: str = 'False',
-                 stratify_by_wasting_treatment: str = 'False', stratify_by_x_factor: str = 'False',
-                 stratify_by_stunting: str = 'False'):
+    def __init__(self, stratify_by_wasting: str = 'wasting', stratify_by_sq_lns: str = 'False'):
         super().__init__()
-        self.stratifier = ResultsStratifier(self.name, stratify_by_wasting, stratify_by_sq_lns,
-                                            stratify_by_wasting_treatment, stratify_by_x_factor, stratify_by_stunting)
+        self.stratifier = ResultsStratifier(self.name, stratify_by_wasting, stratify_by_sq_lns)
 
     @property
     def sub_components(self) -> List[ResultsStratifier]:
@@ -225,44 +193,11 @@ class MortalityObserver(MortalityObserver_):
         return metrics
 
 
-class DisabilityObserver(DisabilityObserver_):
-
-    def __init__(self, stratify_by_wasting: str = 'wasting', stratify_by_sq_lns: str = 'False',
-                 stratify_by_wasting_treatment: str = 'False', stratify_by_x_factor: str = 'False',
-                 stratify_by_stunting: str = 'False'):
-        super().__init__()
-        self.stratifier = ResultsStratifier(self.name, stratify_by_wasting, stratify_by_sq_lns,
-                                            stratify_by_wasting_treatment, stratify_by_x_factor, stratify_by_stunting)
-
-    @property
-    def sub_components(self) -> List[ResultsStratifier]:
-        return [self.stratifier]
-
-    def on_time_step_prepare(self, event: Event):
-        pop = self.population_view.get(event.index, query='tracked == True and alive == "alive"')
-        self.update_metrics(pop)
-
-        pop.loc[:, results.TOTAL_YLDS_COLUMN] += self.disability_weight(pop.index)
-        self.population_view.update(pop)
-
-    def update_metrics(self, pop: pd.DataFrame):
-        for labels, pop_in_group in self.stratifier.group(pop):
-            base_args = (pop_in_group, self.config.to_dict(), self.clock().year, self.step_size(), self.age_bins,
-                         self.disability_weight_pipelines, self.causes)
-            measure_data = self.stratifier.update_labels(get_years_lived_with_disability(*base_args), labels)
-            self.years_lived_with_disability.update(measure_data)
-
-        # TODO remove stratification by wasting state of ylds due to PEM?
-
-
 class DiseaseObserver(DiseaseObserver_):
 
-    def __init__(self, disease: str, stratify_by_wasting: str = 'wasting', stratify_by_sq_lns: str = 'False',
-                 stratify_by_wasting_treatment: str = 'False', stratify_by_x_factor: str = 'False',
-                 stratify_by_stunting: str = 'False'):
+    def __init__(self, disease: str, stratify_by_wasting: str = 'wasting', stratify_by_sq_lns: str = 'False'):
         super().__init__(disease)
-        self.stratifier = ResultsStratifier(self.name, stratify_by_wasting, stratify_by_sq_lns,
-                                            stratify_by_wasting_treatment, stratify_by_x_factor, stratify_by_stunting)
+        self.stratifier = ResultsStratifier(self.name, stratify_by_wasting, stratify_by_sq_lns)
 
     @property
     def sub_components(self) -> List[ResultsStratifier]:
@@ -310,8 +245,7 @@ class CategoricalRiskObserver(CategoricalRiskObserver_):
                  stratify_by_wasting_treatment: str = 'False', stratify_by_x_factor: str = 'False',
                  stratify_by_stunting: str = 'False'):
         super().__init__(risk)
-        self.stratifier = ResultsStratifier(self.name, stratify_by_wasting, stratify_by_sq_lns,
-                                            stratify_by_wasting_treatment, stratify_by_x_factor, stratify_by_stunting)
+        self.stratifier = ResultsStratifier(self.name, stratify_by_wasting, stratify_by_sq_lns)
 
     @property
     def sub_components(self) -> List[ResultsStratifier]:
