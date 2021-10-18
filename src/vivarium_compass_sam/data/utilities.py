@@ -235,7 +235,7 @@ def process_exposure(data: pd.DataFrame, key: str, entity: Union[RiskFactor, Alt
     data = data[data.measure_id == proper_measure_id.pop()]
 
     # from vivarium_inputs.core.get_exposure
-    data = data.drop('modelable_entity_id', 'columns')
+    data = data.drop('modelable_entity_id', axis='columns')
 
     if entity.name in vi_globals.EXTRA_RESIDUAL_CATEGORY:
         # noinspection PyUnusedLocal

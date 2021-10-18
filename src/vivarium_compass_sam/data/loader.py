@@ -57,8 +57,7 @@ def get_data(lookup_key: str, location: str) -> pd.DataFrame:
         data_keys.LRI.CSMR: load_standard_gbd_2019_data_as_gbd_2020_data,
         data_keys.LRI.RESTRICTIONS: load_metadata,
 
-        data_keys.PEM.MAM_DISABILITY_WEIGHT: load_pem_disability_weight,
-        data_keys.PEM.SAM_DISABILITY_WEIGHT: load_pem_disability_weight,
+        data_keys.PEM.DISABILITY_WEIGHT: load_pem_disability_weight,
         data_keys.PEM.EMR: load_standard_gbd_2019_data_as_gbd_2020_data,
         data_keys.PEM.CSMR: load_standard_gbd_2019_data_as_gbd_2020_data,
         data_keys.PEM.RESTRICTIONS: load_metadata,
