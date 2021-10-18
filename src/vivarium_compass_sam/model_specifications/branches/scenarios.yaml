@@ -3,4 +3,4 @@ random_seed_count: 10
 
 branches:
   - intervention:
-      scenario: ['baseline', 'wasting_treatment']
+      scenario: ['baseline', 'sqlns']

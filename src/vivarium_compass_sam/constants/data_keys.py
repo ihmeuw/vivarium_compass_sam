@@ -36,36 +36,35 @@ POPULATION = __Population()
 ##########
 
 
-class __DiarrhealDiseases(NamedTuple):
+class __LowerRespiratoryInfections(NamedTuple):
 
     # Keys that will be loaded into the artifact. must have a colon type declaration
-    PREVALENCE: TargetString = TargetString('cause.diarrheal_diseases.prevalence')
-    INCIDENCE_RATE: TargetString = TargetString('cause.diarrheal_diseases.incidence_rate')
-    REMISSION_RATE: TargetString = TargetString('cause.diarrheal_diseases.remission_rate')
-    DISABILITY_WEIGHT: TargetString = TargetString('cause.diarrheal_diseases.disability_weight')
-    EMR: TargetString = TargetString('cause.diarrheal_diseases.excess_mortality_rate')
-    CSMR: TargetString = TargetString('cause.diarrheal_diseases.cause_specific_mortality_rate')
-    RESTRICTIONS: TargetString = TargetString('cause.diarrheal_diseases.restrictions')
+    PREVALENCE: TargetString = TargetString('cause.lower_respiratory_infections.prevalence')
+    INCIDENCE_RATE: TargetString = TargetString('cause.lower_respiratory_infections.incidence_rate')
+    REMISSION_RATE: TargetString = TargetString('cause.lower_respiratory_infections.remission_rate')
+    DISABILITY_WEIGHT: TargetString = TargetString('cause.lower_respiratory_infections.disability_weight')
+    EMR: TargetString = TargetString('cause.lower_respiratory_infections.excess_mortality_rate')
+    CSMR: TargetString = TargetString('cause.lower_respiratory_infections.cause_specific_mortality_rate')
+    RESTRICTIONS: TargetString = TargetString('cause.lower_respiratory_infections.restrictions')
 
     # Useful keys not for the artifact - distinguished by not using the colon type declaration
 
     @property
     def name(self):
-        return 'diarrheal_diseases'
+        return 'lower_respiratory_infections'
 
     @property
     def log_name(self):
-        return 'diarrheal diseases'
+        return 'lower respiratory infections'
 
 
-DIARRHEA = __DiarrhealDiseases()
+LRI = __LowerRespiratoryInfections()
 
 
 class __ProteinEnergyMalnutrition(NamedTuple):
 
     # Keys that will be loaded into the artifact. must have a colon type declaration
-    MAM_DISABILITY_WEIGHT: TargetString = TargetString('sequela.moderate_acute_malnutrition.disability_weight')
-    SAM_DISABILITY_WEIGHT: TargetString = TargetString('sequela.severe_acute_malnutrition.disability_weight')
+    DISABILITY_WEIGHT: TargetString = TargetString('cause.protein_energy_malnutrition.disability_weight')
     EMR: TargetString = TargetString('cause.protein_energy_malnutrition.excess_mortality_rate')
     CSMR: TargetString = TargetString('cause.protein_energy_malnutrition.cause_specific_mortality_rate')
     RESTRICTIONS: TargetString = TargetString('cause.protein_energy_malnutrition.restrictions')
@@ -117,36 +116,26 @@ class __Wasting(NamedTuple):
 WASTING = __Wasting()
 
 
-class __WastingTreatment(NamedTuple):
-
-    # Keys that will be loaded into the artifact. must have a colon type declaration
-    EXPOSURE: TargetString = 'risk_factor.wasting_treatment.exposure'
-    DISTRIBUTION: TargetString = 'risk_factor.wasting_treatment.distribution'
-    CATEGORIES: TargetString = 'risk_factor.wasting_treatment.categories'
-    RELATIVE_RISK: TargetString = 'risk_factor.wasting_treatment.relative_risk'
-    PAF: TargetString = 'risk_factor.wasting_treatment.population_attributable_fraction'
-
-    # Useful keys not for the artifact - distinguished by not using the colon type declaration
-    TMREL_CATEGORY = 'cat2'
-    COVERED_CATEGORIES = ['cat2', 'cat3']
-    UNCOVERED_CATEGORIES = ['cat1']
+class __SQLNS(NamedTuple):
+    COVERAGE = 'sq_lns.coverage'
+    PROPENSITY = 'sq_lns.propensity'
 
     @property
     def name(self):
-        return 'wasting_treatment'
+        return 'sq_lns'
 
     @property
     def log_name(self):
-        return 'wasting treatment'
+        return 'sq-lns'
 
 
-WASTING_TREATMENT = __WastingTreatment()
+SQ_LNS = __SQLNS()
 
 
 MAKE_ARTIFACT_KEY_GROUPS = [
     POPULATION,
-    DIARRHEA,
+    LRI,
     PEM,
     WASTING,
-    WASTING_TREATMENT,
+    SQ_LNS,
 ]
