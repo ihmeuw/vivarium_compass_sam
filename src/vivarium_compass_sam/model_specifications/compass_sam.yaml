@@ -18,7 +18,7 @@ components:
 
             - MortalityObserver('wasting')
             - DiseaseObserver('lower_respiratory_infections', 'wasting')
-            - CategoricalRiskObserver('child_stunting', 'False', 'sq_lns')
+            - CategoricalRiskObserver('child_wasting', 'False', 'sq_lns')
 
 configuration:
     input_data:

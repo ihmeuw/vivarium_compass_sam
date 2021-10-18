@@ -241,9 +241,7 @@ class DiseaseObserver(DiseaseObserver_):
 
 class CategoricalRiskObserver(CategoricalRiskObserver_):
 
-    def __init__(self, risk: str, stratify_by_wasting: str = 'False', stratify_by_sq_lns: str = 'False',
-                 stratify_by_wasting_treatment: str = 'False', stratify_by_x_factor: str = 'False',
-                 stratify_by_stunting: str = 'False'):
+    def __init__(self, risk: str, stratify_by_wasting: str = 'False', stratify_by_sq_lns: str = 'False'):
         super().__init__(risk)
         self.stratifier = ResultsStratifier(self.name, stratify_by_wasting, stratify_by_sq_lns)
 
