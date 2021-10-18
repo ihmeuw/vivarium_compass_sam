@@ -227,17 +227,15 @@ def load_paf(key: str, location: str) -> pd.DataFrame:
 
 
 def load_pem_disability_weight(key: str, location: str) -> pd.DataFrame:
-    if key in [data_keys.PEM.MAM_DISABILITY_WEIGHT, data_keys.PEM.SAM_DISABILITY_WEIGHT]:
-        key_sequelae_map = {
-            data_keys.PEM.MAM_DISABILITY_WEIGHT: [sequelae.moderate_wasting_with_edema,
-                                                  sequelae.moderate_wasting_without_edema],
-            data_keys.PEM.SAM_DISABILITY_WEIGHT: [sequelae.severe_wasting_with_edema,
-                                                  sequelae.severe_wasting_without_edema],
-        }
+    if key == data_keys.PEM.DISABILITY_WEIGHT:
+        sequela_list = [sequelae.moderate_wasting_with_edema,
+                        sequelae.moderate_wasting_without_edema,
+                        sequelae.severe_wasting_with_edema,
+                        sequelae.severe_wasting_without_edema]
 
         prevalence_disability_weight = []
         state_prevalence = []
-        for s in key_sequelae_map[key]:
+        for s in sequela_list:
             sequela_prevalence = interface.get_measure(s, 'prevalence', location)
             sequela_disability_weight = interface.get_measure(s, 'disability_weight', location)
 
