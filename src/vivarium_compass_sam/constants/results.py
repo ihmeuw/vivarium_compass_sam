@@ -34,8 +34,7 @@ COLUMN_TEMPLATES = {
     'ylls': YLLS_COLUMN_TEMPLATE,
     'disease_state_person_time': DISEASE_STATE_PERSON_TIME_COLUMN_TEMPLATE,
     'disease_transition_count': DISEASE_TRANSITION_COUNT_COLUMN_TEMPLATE,
-    # todo uncomment after running make results
-    # 'wasting_state_person_time': WASTING_STATE_PERSON_TIME_COLUMN_TEMPLATE,
+    'wasting_state_person_time': WASTING_STATE_PERSON_TIME_COLUMN_TEMPLATE,
 }
 
 NON_COUNT_TEMPLATES = [
