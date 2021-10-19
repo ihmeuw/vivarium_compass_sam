@@ -63,7 +63,7 @@ configuration:
             by_age: True
             by_sex: True
             by_year: True
-        child_wasting_observer:
+        child_wasting:
             by_age: True
             by_sex: True
             by_year: True
