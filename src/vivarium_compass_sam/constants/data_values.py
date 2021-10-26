@@ -40,4 +40,4 @@ SQ_LNS = __SQLNS()
 ###################################
 # Scale-up Intervention Constants #
 ###################################
-SCALE_UP_START_DT = datetime(2023, 1, 1)
+SCALE_UP_START_DT = datetime(2022, 1, 1)
