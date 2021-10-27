@@ -15,9 +15,9 @@ components:
         components:
             - SQLNSTreatment()
 
-            - MortalityObserver('wasting')
-            - DiseaseObserver('lower_respiratory_infections', 'wasting')
-            - CategoricalRiskObserver('child_wasting', 'False', 'sq_lns')
+            - MortalityObserver()
+            - DiseaseObserver('lower_respiratory_infections')
+            - CategoricalRiskObserver('child_wasting')
 
 configuration:
     input_data:

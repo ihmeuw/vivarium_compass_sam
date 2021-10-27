@@ -10,7 +10,7 @@ from vivarium_public_health.metrics import (MortalityObserver as MortalityObserv
 from vivarium_public_health.metrics.utilities import (get_deaths, get_state_person_time, get_transition_count,
                                                       get_years_of_life_lost, TransitionString)
 
-from vivarium_compass_sam.constants import models, results, data_keys
+from vivarium_compass_sam.constants import results, data_keys
 
 
 class ResultsStratifier:
@@ -23,10 +23,9 @@ class ResultsStratifier:
 
     """
 
-    def __init__(self, observer_name: str, by_wasting: str, by_sqlns: str):
+    def __init__(self, observer_name: str, by_wasting: bool):
         self.name = f'{observer_name}_results_stratifier'
-        self.by_wasting = by_wasting != 'False'
-        self.by_sqlns = by_sqlns != 'False'
+        self.by_wasting = by_wasting
 
     # noinspection PyAttributeOutsideInit
     def setup(self, builder: Builder):
@@ -48,13 +47,6 @@ class ResultsStratifier:
                 for i in range(4, 0, -1)
             }
             self.pipelines[data_keys.WASTING.name] = builder.value.get_value(f'{data_keys.WASTING.name}.exposure')
-
-        if self.by_sqlns:
-            self.stratification_levels['sq_lns'] = {
-                coverage: get_state_function(data_keys.SQ_LNS.name, coverage == 'covered')
-                for coverage in ['covered', 'uncovered']
-            }
-            self.pipelines[data_keys.SQ_LNS.name] = builder.value.get_value(data_keys.SQ_LNS.COVERAGE)
 
         self.population_view = builder.population.get_view(columns_required)
         self.stratification_groups: pd.Series = None
@@ -157,9 +149,9 @@ class ResultsStratifier:
 
 class MortalityObserver(MortalityObserver_):
 
-    def __init__(self, stratify_by_wasting: str = 'wasting', stratify_by_sq_lns: str = 'False'):
+    def __init__(self):
         super().__init__()
-        self.stratifier = ResultsStratifier(self.name, stratify_by_wasting, stratify_by_sq_lns)
+        self.stratifier = ResultsStratifier(self.name, True)
 
     @property
     def sub_components(self) -> List[ResultsStratifier]:
@@ -195,9 +187,9 @@ class MortalityObserver(MortalityObserver_):
 
 class DiseaseObserver(DiseaseObserver_):
 
-    def __init__(self, disease: str, stratify_by_wasting: str = 'wasting', stratify_by_sq_lns: str = 'False'):
+    def __init__(self, disease: str):
         super().__init__(disease)
-        self.stratifier = ResultsStratifier(self.name, stratify_by_wasting, stratify_by_sq_lns)
+        self.stratifier = ResultsStratifier(self.name, True)
 
     @property
     def sub_components(self) -> List[ResultsStratifier]:
@@ -241,9 +233,9 @@ class DiseaseObserver(DiseaseObserver_):
 
 class CategoricalRiskObserver(CategoricalRiskObserver_):
 
-    def __init__(self, risk: str, stratify_by_wasting: str = 'False', stratify_by_sq_lns: str = 'False'):
+    def __init__(self, risk: str):
         super().__init__(risk)
-        self.stratifier = ResultsStratifier(self.name, stratify_by_wasting, stratify_by_sq_lns)
+        self.stratifier = ResultsStratifier(self.name, False)
 
     @property
     def sub_components(self) -> List[ResultsStratifier]:
